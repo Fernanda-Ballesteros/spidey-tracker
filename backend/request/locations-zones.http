@@ -1,0 +1,106 @@
+@api = http://localhost:3000/api
+# Define testPassword in a local REST Client environment before running requests.
+
+### 0. Login (copia el token con el nombre "login")
+# @name login
+POST {{api}}/auth/login
+Content-Type: application/json
+
+{ "email": "peter@dailybugle.com", "password": "{{testPassword}}" }
+
+### 1. Crear zona Queens (polígono) -> 201
+# @name zone
+POST {{api}}/zones
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "Queens",
+  "description": "Zona perimetral de patrullaje de Queens",
+  "riskLevel": "alto",
+  "area": {
+    "type": "Polygon",
+    "coordinates": [[
+      [-73.96, 40.70], [-73.70, 40.70], [-73.70, 40.80],
+      [-73.96, 40.80], [-73.96, 40.70]
+    ]]
+  }
+}
+
+### 2. Polígono con lados cruzados -> 400
+POST {{api}}/zones
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "Zona rara",
+  "area": {
+    "type": "Polygon",
+    "coordinates": [[ [0,0], [10,10], [10,0], [0,10], [0,0] ]]
+  }
+}
+
+### 3. Crear ubicación DENTRO de Queens -> 201
+# @name loc
+POST {{api}}/locations
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "Puente de Queensboro",
+  "description": "Puente donde suele verse a Spider-Man",
+  "category": "avistamiento",
+  "latitude": 40.7570,
+  "longitude": -73.9544
+}
+
+### 4. Crear ubicación FUERA de Queens (Manhattan norte) -> 201
+POST {{api}}/locations
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "Harlem Rooftop",
+  "description": "Azotea frecuente de combates",
+  "category": "crimen",
+  "latitude": 40.8116,
+  "longitude": -73.9465
+}
+
+### 5. Buscar por nombre parcial, sin importar mayúsculas -> 200
+GET {{api}}/locations?search=PUENTE
+Authorization: Bearer {{login.response.body.token}}
+
+### 6. Filtrar por categoría -> 200
+GET {{api}}/locations?category=crimen
+Authorization: Bearer {{login.response.body.token}}
+
+### 7. Filtrar por ZONA (solo debe salir el puente) -> 200
+GET {{api}}/locations?zone={{zone.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+
+### 8. GeoJSON para el mapa -> 200
+GET {{api}}/locations/geojson
+Authorization: Bearer {{login.response.body.token}}
+
+### 9. Detalle: debe incluir "zones": [Queens] -> 200
+GET {{api}}/locations/{{loc.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+
+### 10. Editar desde el popup -> 200
+PATCH {{api}}/locations/{{loc.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{ "description": "Puente donde se vio a Spider-Man ayer en la noche" }
+
+### 11. Sin token -> 401
+GET {{api}}/locations
+
+### 12. Id mal formado -> 400
+GET {{api}}/locations/abc
+Authorization: Bearer {{login.response.body.token}}
+
+### 13. Eliminar -> 200
+DELETE {{api}}/locations/{{loc.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}

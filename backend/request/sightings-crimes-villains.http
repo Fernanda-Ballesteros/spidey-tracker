@@ -1,0 +1,133 @@
+@api = http://localhost:3000/api
+# Define testPassword in a local REST Client environment before running requests.
+
+### 0. Login
+# @name login
+POST {{api}}/auth/login
+Content-Type: application/json
+
+{ "email": "peter@dailybugle.com", "password": "{{testPassword}}" }
+
+### 1. Ubicación de AVISTAMIENTO
+# @name locAv
+POST {{api}}/locations
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{ "name": "Puente de Brooklyn", "description": "Se vio a Spider-Man balanceándose", "category": "avistamiento", "latitude": 40.7061, "longitude": -73.9969 }
+
+### 2. Ubicación de CRIMEN
+# @name locCr
+POST {{api}}/locations
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{ "name": "Banco de Queens", "description": "Banco donde ocurrió el asalto", "category": "crimen", "latitude": 40.7282, "longitude": -73.7949 }
+
+### 3. Ubicación de GUARIDA
+# @name locGu
+POST {{api}}/locations
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{ "name": "Fábrica abandonada de Oscorp", "description": "Posible escondite del Duende Verde", "category": "guarida", "latitude": 40.6892, "longitude": -74.0445 }
+
+### 4. Villano con su guarida -> 201 (el nombre cambia en cada ejecución)
+# @name villain
+POST {{api}}/villains
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "Duende Verde {{$timestamp}}",
+  "alias": "Norman Osborn",
+  "history": "Industrial de Oscorp que se transformó tras un experimento fallido.",
+  "powers": ["fuerza", "planeador", "bombas calabaza"],
+  "threatLevel": "extremo",
+  "knownLocations": ["{{locGu.response.body.id}}"]
+}
+
+### 5. Villano con guarida que NO es guarida -> 400
+POST {{api}}/villains
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{ "name": "Otro", "history": "Historial de prueba largo", "threatLevel": "bajo", "knownLocations": ["{{locAv.response.body.id}}"] }
+
+### 6. Villano duplicado (repite el nombre de la petición 4) -> 409
+POST {{api}}/villains
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{ "name": "{{villain.response.body.name}}", "history": "Historial de prueba largo", "threatLevel": "alto" }
+
+### 7. Avistamiento -> 201
+# @name sighting
+POST {{api}}/sightings
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "location": "{{locAv.response.body.id}}",
+  "seenAt": "2026-11-22T21:30:00Z",
+  "status": "confirmado",
+  "witness": "Ned Leeds",
+  "notes": "Balanceándose entre los cables del puente"
+}
+
+### 8. Avistamiento apuntando a una ubicación de CRIMEN -> 400
+POST {{api}}/sightings
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{ "location": "{{locCr.response.body.id}}", "seenAt": "2026-11-22T21:30:00Z", "notes": "No debería permitirlo" }
+
+### 9. Crimen con villano y avistamiento -> 201
+# @name crime
+POST {{api}}/crimes
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "location": "{{locCr.response.body.id}}",
+  "type": "asalto",
+  "description": "Asalto a mano armada en el banco",
+  "occurredAt": "2026-11-22T20:00:00Z",
+  "severity": "alta",
+  "villain": "{{villain.response.body.id}}",
+  "sighting": "{{sighting.response.body.id}}"
+}
+
+### 10. Crimen con fecha futura -> 400
+POST {{api}}/crimes
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{ "location": "{{locCr.response.body.id}}", "type": "robo", "description": "Robo de prueba largo", "occurredAt": "2099-01-01T00:00:00Z", "severity": "baja" }
+
+### 11. Filtros de avistamientos -> 200
+GET {{api}}/sightings?status=confirmado&from=2026-11-01&to=2026-11-30&search=cables
+Authorization: Bearer {{login.response.body.token}}
+
+### 12. Filtros de crímenes -> 200
+GET {{api}}/crimes?type=asalto&severity=alta&villain={{villain.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+
+### 13. Villano con historial de crímenes (debe traer "crimes") -> 200
+GET {{api}}/villains/{{villain.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+
+### 14. Quitar el villano de un crimen -> 200
+PATCH {{api}}/crimes/{{crime.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{ "villain": null }
+
+### 15. Borrar el avistamiento -> 200 (el crimen sigue existiendo)
+DELETE {{api}}/sightings/{{sighting.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+
+### 16. Borrar la ubicación del crimen -> 200 (borra también sus crímenes)
+DELETE {{api}}/locations/{{locCr.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}

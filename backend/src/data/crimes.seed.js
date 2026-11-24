@@ -1,0 +1,88 @@
+"use strict";
+
+// location: clave de una ubicación con categoría "crimen"
+// villain: clave de villano (opcional)
+// sighting: clave de avistamiento (opcional)
+// hoursAgo: hace cuántas horas ocurrió
+module.exports = [
+    {
+        location: "cr-banco",
+        type: "asalto",
+        description: "Asalto a mano armada en sucursal bancaria; los sospechosos huyeron en una camioneta.",
+        hoursAgo: 28,
+        severity: "alta",
+        status: "en-proceso",
+        villain: null,
+        sighting: "s2",
+    },
+    {
+        location: "cr-diamantes",
+        type: "robo",
+        description: "Robo de joyas con uso de un traje volador; el responsable fue capturado después.",
+        hoursAgo: 90,
+        severity: "alta",
+        status: "resuelto",
+        villain: "buitre",
+        sighting: "s3",
+    },
+    {
+        location: "cr-redhook",
+        type: "secuestro",
+        description: "Secuestro de un empresario en el muelle; testigos vieron un planeador sobre las bodegas.",
+        hoursAgo: 12,
+        severity: "critica",
+        status: "en-proceso",
+        villain: "duende-verde",
+        sighting: "s1",
+    },
+    {
+        location: "cr-jay",
+        type: "balacera",
+        description: "Balacera entre bandas rivales en el andén de la estación, con varios heridos.",
+        hoursAgo: 40,
+        severity: "alta",
+        status: "reportado",
+        villain: "kingpin",
+        sighting: null,
+    },
+    {
+        location: "cr-banco",
+        type: "vandalismo",
+        description: "Grafitis y daños a cajeros automáticos durante la madrugada.",
+        hoursAgo: 120,
+        severity: "baja",
+        status: "resuelto",
+        villain: null,
+        sighting: null,
+    },
+    {
+        location: "cr-redhook",
+        type: "incendio",
+        description: "Incendio provocado en una bodega del muelle; se hallaron restos de bombas calabaza.",
+        hoursAgo: 8,
+        severity: "alta",
+        status: "reportado",
+        villain: "duende-verde",
+        sighting: null,
+    },
+    {
+        location: "cr-jay",
+        type: "otro",
+        description: "Apagón repentino en el distrito; se sospecha de un ataque a la red eléctrica.",
+        hoursAgo: 60,
+        severity: "media",
+        status: "reportado",
+        villain: "electro",
+        sighting: null,
+    },
+    {
+        location: "cr-diamantes",
+        type: "robo",
+        description: "Hurto de mercancía en una joyería durante el cambio de turno del vigilante.",
+        hoursAgo: 220,
+        severity: "baja",
+        status: "resuelto",
+        villain: null,
+        sighting: null,
+    },
+];

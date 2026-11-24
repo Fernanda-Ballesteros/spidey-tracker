@@ -1,0 +1,69 @@
+@api = http://localhost:3000/api/auth
+# Define testPassword in a local REST Client environment before running requests.
+
+### 1. Registro correcto
+POST {{api}}/register
+Content-Type: application/json
+
+{
+  "name": "Peter Parker",
+  "email": "peter@dailybugle.com",
+  "password": "{{testPassword}}"
+}
+
+### 2. Registro con correo duplicado (espera 409)
+POST {{api}}/register
+Content-Type: application/json
+
+{
+  "name": "Otro Peter",
+  "email": "peter@dailybugle.com",
+  "password": "{{testPassword}}"
+}
+
+### 3. Registro con datos inválidos (espera 400)
+POST {{api}}/register
+Content-Type: application/json
+
+{
+  "name": "P",
+  "email": "no-es-correo",
+  "password": "123"
+}
+
+### 4. Registro intentando ser admin (espera 400, campo no permitido)
+POST {{api}}/register
+Content-Type: application/json
+
+{
+  "name": "Hacker",
+  "email": "hacker@test.com",
+  "password": "{{testPassword}}",
+  "role": "admin"
+}
+
+### 5. Login correcto (copia el token de la respuesta)
+# @name login
+POST {{api}}/login
+Content-Type: application/json
+
+{
+  "email": "peter@dailybugle.com",
+  "password": "{{testPassword}}"
+}
+
+### 6. Login con contraseña incorrecta (espera 401)
+POST {{api}}/login
+Content-Type: application/json
+
+{
+  "email": "peter@dailybugle.com",
+  "password": "incorrecta123"
+}
+
+### 7. Perfil con token (espera 200)
+GET {{api}}/me
+Authorization: Bearer {{login.response.body.token}}
+
+### 8. Perfil sin token (espera 401)
+GET {{api}}/me

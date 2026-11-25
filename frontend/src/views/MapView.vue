@@ -221,18 +221,24 @@ const popupForm = reactive({
   name: '',
   description: '',
   category: 'avistamiento',
+  latitude: '',
+  longitude: '',
 })
 
 const popupErrors = reactive({
   name: '',
   description: '',
   category: '',
+  latitude: '',
+  longitude: '',
 })
 
 function limpiarErroresPopup() {
   popupErrors.name = ''
   popupErrors.description = ''
   popupErrors.category = ''
+  popupErrors.latitude = ''
+  popupErrors.longitude = ''
 }
 
 function iniciarEdicionPopup(location) {
@@ -240,6 +246,8 @@ function iniciarEdicionPopup(location) {
   popupForm.name = location.name
   popupForm.description = location.description
   popupForm.category = location.category
+  popupForm.longitude = location.point?.coordinates?.[0] ?? ''
+  popupForm.latitude = location.point?.coordinates?.[1] ?? ''
   limpiarErroresPopup()
 }
 
@@ -269,7 +277,17 @@ function validarPopup() {
     popupErrors.category = 'Selecciona una categoría válida.'
   }
 
-  return !popupErrors.name && !popupErrors.description && !popupErrors.category
+  const lat = Number(popupForm.latitude)
+  if (popupForm.latitude === '' || !Number.isFinite(lat) || lat < -90 || lat > 90) {
+    popupErrors.latitude = 'La latitud debe estar entre -90 y 90.'
+  }
+
+  const lng = Number(popupForm.longitude)
+  if (popupForm.longitude === '' || !Number.isFinite(lng) || lng < -180 || lng > 180) {
+    popupErrors.longitude = 'La longitud debe estar entre -180 y 180.'
+  }
+
+  return Object.values(popupErrors).every((mensaje) => !mensaje)
 }
 
 async function guardarPopupEdicion(location) {
@@ -292,6 +310,15 @@ async function guardarPopupEdicion(location) {
 
   if (popupForm.category !== location.category) {
     payload.category = popupForm.category
+  }
+
+  const [lngActual, latActual] = location.point?.coordinates || []
+  if (Number(popupForm.latitude) !== latActual) {
+    payload.latitude = Number(popupForm.latitude)
+  }
+
+  if (Number(popupForm.longitude) !== lngActual) {
+    payload.longitude = Number(popupForm.longitude)
   }
 
   if (Object.keys(payload).length === 0) {
@@ -626,6 +653,32 @@ onBeforeUnmount(() => {
                     <p v-if="popupErrors.category" class="field-error">
                       {{ popupErrors.category }}
                     </p>
+                  </div>
+
+                  <div class="form-field">
+                    <label class="form-label" :for="`popup-latitud-${marker.id}`">Latitud</label>
+                    <input
+                      :id="`popup-latitud-${marker.id}`"
+                      v-model="popupForm.latitude"
+                      class="input"
+                      :class="{ 'input--error': popupErrors.latitude }"
+                      type="number"
+                      step="any"
+                    />
+                    <p v-if="popupErrors.latitude" class="field-error">{{ popupErrors.latitude }}</p>
+                  </div>
+
+                  <div class="form-field">
+                    <label class="form-label" :for="`popup-longitud-${marker.id}`">Longitud</label>
+                    <input
+                      :id="`popup-longitud-${marker.id}`"
+                      v-model="popupForm.longitude"
+                      class="input"
+                      :class="{ 'input--error': popupErrors.longitude }"
+                      type="number"
+                      step="any"
+                    />
+                    <p v-if="popupErrors.longitude" class="field-error">{{ popupErrors.longitude }}</p>
                   </div>
 
                   <div class="popup__actions">

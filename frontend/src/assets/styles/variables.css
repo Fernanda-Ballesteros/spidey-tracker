@@ -1,0 +1,47 @@
+:root {
+  /* Paleta oscura tipo centro de mando, tomada de los diseños. */
+  --color-bg: #080f1a;
+  --color-bg-soft: #0b1423;
+  --color-surface: #101a2c;
+  --color-surface-2: #162238;
+  --color-surface-3: #1b2a44;
+  --color-border: #24344e;
+  --color-border-strong: #385072;
+  --color-text: #e8eef8;
+  --color-text-muted: #8b9cb5;
+  --color-text-dim: #62728a;
+
+  /* Cian para navegación y foco; coral para acciones principales. */
+  --color-accent: #3ec7df;
+  --color-accent-strong: #64d9ee;
+  --color-accent-soft: rgba(62, 199, 223, 0.12);
+  --color-brand: #ff5a5f;
+  --color-brand-hover: #ff7579;
+  --color-brand-soft: rgba(255, 90, 95, 0.12);
+
+  /* Estados reutilizables en chips, alertas y tablas. */
+  --color-success: #35c77a;
+  --color-success-soft: rgba(53, 199, 122, 0.12);
+  --color-warning: #f2b544;
+  --color-warning-soft: rgba(242, 181, 68, 0.12);
+  --color-danger: #e5484d;
+  --color-danger-soft: rgba(229, 72, 77, 0.12);
+  --color-info: #3ec7df;
+  --color-info-soft: rgba(62, 199, 223, 0.12);
+
+  /* Tipografías condensadas y monoespaciadas del diseño. */
+  --font-display: 'Rajdhani', 'Bahnschrift SemiCondensed', 'Bahnschrift', 'Arial Narrow', sans-serif;
+  --font-body: 'Rajdhani', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Share Tech Mono', 'Consolas', 'Courier New', monospace;
+
+  /* Bordes, sombras y medidas compartidas. */
+  --border: 1px solid var(--color-border);
+  --border-strong: 1px solid var(--color-border-strong);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+  --shadow-panel: 0 16px 40px rgba(0, 0, 0, 0.35);
+  --sidebar-width: 250px;
+  --transition: 160ms ease;
+}

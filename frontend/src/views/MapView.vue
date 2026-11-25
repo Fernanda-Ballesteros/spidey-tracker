@@ -1167,8 +1167,8 @@ onBeforeUnmount(() => {
   gap: 0.45rem;
   max-width: calc(100% - 1.8rem);
   padding: 0.45rem 0.65rem;
-  background: rgba(8, 15, 26, 0.9);
-  border: 1px solid rgba(62, 199, 223, 0.35);
+  background: rgba(19, 35, 92, 0.9);
+  border: 1px solid rgba(127, 196, 238, 0.35);
   border-radius: var(--radius-sm);
   color: var(--color-text-muted);
   font-family: var(--font-mono);
@@ -1195,7 +1195,7 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 0.45rem;
   padding: 0.4rem 0.65rem;
-  background: rgba(8, 15, 26, 0.9);
+  background: rgba(19, 35, 92, 0.9);
   border: var(--border);
   border-radius: var(--radius-pill);
   color: var(--color-text-muted);
@@ -1252,7 +1252,7 @@ onBeforeUnmount(() => {
   place-items: center;
   padding: 0 0.35rem;
   background: var(--color-accent-soft);
-  border: 1px solid rgba(62, 199, 223, 0.35);
+  border: 1px solid rgba(127, 196, 238, 0.35);
   border-radius: var(--radius-pill);
   color: var(--color-accent);
   font-family: var(--font-mono);
@@ -1345,7 +1345,7 @@ onBeforeUnmount(() => {
 
 .zone-item__delete:hover {
   background: var(--color-danger-soft);
-  border-color: rgba(229, 72, 77, 0.4);
+  border-color: rgba(255, 92, 92, 0.4);
   color: var(--color-danger);
 }
 

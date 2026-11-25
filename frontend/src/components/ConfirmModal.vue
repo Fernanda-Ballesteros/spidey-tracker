@@ -93,7 +93,7 @@ function cancelar() {
   height: 30px;
   place-items: center;
   background: var(--color-danger-soft);
-  border: 1px solid rgba(229, 72, 77, 0.5);
+  border: 1px solid rgba(255, 92, 92, 0.5);
   border-radius: 50%;
   color: var(--color-danger);
   font-family: var(--font-mono);

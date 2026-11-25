@@ -151,7 +151,7 @@ ol {
 .btn-primary {
   background: var(--color-brand);
   color: #ffffff;
-  box-shadow: 0 6px 18px rgba(255, 90, 95, 0.18);
+  box-shadow: 0 6px 18px rgba(226, 59, 59, 0.18);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -183,7 +183,7 @@ ol {
 
 .btn-danger {
   background: var(--color-danger-soft);
-  border-color: rgba(229, 72, 77, 0.5);
+  border-color: rgba(255, 92, 92, 0.5);
   color: var(--color-danger);
 }
 
@@ -276,13 +276,13 @@ ol {
 
 .chip-danger {
   background: var(--color-danger-soft);
-  border-color: rgba(229, 72, 77, 0.35);
+  border-color: rgba(255, 92, 92, 0.35);
   color: var(--color-danger);
 }
 
 .chip-info {
   background: var(--color-info-soft);
-  border-color: rgba(62, 199, 223, 0.35);
+  border-color: rgba(127, 196, 238, 0.35);
   color: var(--color-info);
 }
 

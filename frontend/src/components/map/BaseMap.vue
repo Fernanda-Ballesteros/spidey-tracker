@@ -268,9 +268,9 @@ function enableZoneDrawing() {
     snapDistance: 20,
     allowSelfIntersection: false,
     pathOptions: {
-      color: '#3ec7df',
+      color: '#7fc4ee',
       weight: 2,
-      fillColor: '#3ec7df',
+      fillColor: '#7fc4ee',
       fillOpacity: 0.12,
       dashArray: '6 4',
     },
@@ -303,9 +303,9 @@ function onZoneCreated(event) {
 
   draftZone = event.layer
   draftZone.setStyle({
-    color: '#3ec7df',
+    color: '#7fc4ee',
     weight: 2,
-    fillColor: '#3ec7df',
+    fillColor: '#7fc4ee',
     fillOpacity: 0.12,
     dashArray: '6 4',
   })

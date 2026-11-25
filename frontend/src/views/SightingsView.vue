@@ -534,8 +534,8 @@ async function confirmarEliminar() {
   right: 0.8rem;
   z-index: 450;
   padding: 0.35rem 0.65rem;
-  background: rgba(8, 15, 26, 0.92);
-  border: 1px solid rgba(62, 199, 223, 0.35);
+  background: rgba(19, 35, 92, 0.92);
+  border: 1px solid rgba(127, 196, 238, 0.35);
   border-radius: var(--radius-sm);
   color: var(--color-text);
   font-family: var(--font-mono);
@@ -683,7 +683,7 @@ async function confirmarEliminar() {
 .table-panel__count {
   padding: 0.15rem 0.55rem;
   background: var(--color-accent-soft);
-  border: 1px solid rgba(62, 199, 223, 0.35);
+  border: 1px solid rgba(127, 196, 238, 0.35);
   border-radius: var(--radius-sm);
   color: var(--color-accent);
   font-family: var(--font-mono);
@@ -785,7 +785,7 @@ async function confirmarEliminar() {
 
 .icon-btn--danger:hover {
   background: var(--color-danger-soft);
-  border-color: rgba(229, 72, 77, 0.5);
+  border-color: rgba(255, 92, 92, 0.5);
 }
 
 .icon-btn svg {

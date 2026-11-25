@@ -142,7 +142,7 @@ function cerrarSesion() {
   height: 38px;
   place-items: center;
   background: var(--color-brand-soft);
-  border: 1px solid rgba(255, 90, 95, 0.55);
+  border: 1px solid rgba(226, 59, 59, 0.55);
   border-radius: var(--radius-md);
   color: var(--color-brand);
   font-family: var(--font-display);
@@ -209,7 +209,7 @@ function cerrarSesion() {
   background: var(--color-accent);
   border-color: var(--color-accent);
   color: #071019;
-  box-shadow: 0 0 20px rgba(62, 199, 223, 0.18);
+  box-shadow: 0 0 20px rgba(127, 196, 238, 0.18);
 }
 
 .nav__mark {
@@ -314,9 +314,9 @@ function cerrarSesion() {
   padding: clamp(1.1rem, 2.5vw, 2.5rem);
   background-color: var(--color-bg);
   background-image:
-    radial-gradient(circle at 80% -10%, rgba(62, 199, 223, 0.08), transparent 42%),
-    linear-gradient(rgba(62, 199, 223, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(62, 199, 223, 0.025) 1px, transparent 1px);
+    radial-gradient(circle at 80% -10%, rgba(127, 196, 238, 0.08), transparent 42%),
+    linear-gradient(rgba(127, 196, 238, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127, 196, 238, 0.025) 1px, transparent 1px);
   background-size:
     auto,
     36px 36px,
@@ -343,7 +343,7 @@ function cerrarSesion() {
     gap: 0.75rem;
     height: 56px;
     padding: 0 1rem;
-    background: rgba(8, 15, 26, 0.94);
+    background: rgba(19, 35, 92, 0.94);
     border-bottom: var(--border);
     backdrop-filter: blur(10px);
   }

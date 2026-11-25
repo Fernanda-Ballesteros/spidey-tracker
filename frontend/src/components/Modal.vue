@@ -193,7 +193,7 @@ onBeforeUnmount(() => {
 
 .modal__close:hover {
   background: var(--color-brand-soft);
-  border-color: rgba(255, 90, 95, 0.4);
+  border-color: rgba(226, 59, 59, 0.4);
   color: var(--color-brand);
 }
 

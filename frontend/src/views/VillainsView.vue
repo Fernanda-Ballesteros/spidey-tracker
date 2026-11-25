@@ -599,7 +599,7 @@ function textoGuaridas(villano) {
   height: 46px;
   place-items: center;
   background: var(--color-brand-soft);
-  border: 1px solid rgba(255, 90, 95, 0.4);
+  border: 1px solid rgba(226, 59, 59, 0.4);
   border-radius: var(--radius-md);
   color: var(--color-brand);
 }
@@ -679,8 +679,8 @@ function textoGuaridas(villano) {
 }
 
 .map-overlay__title {
-  background: rgba(8, 15, 26, 0.92);
-  border: 1px solid rgba(62, 199, 223, 0.35);
+  background: rgba(19, 35, 92, 0.92);
+  border: 1px solid rgba(127, 196, 238, 0.35);
   color: var(--color-text);
 }
 
@@ -715,7 +715,7 @@ function textoGuaridas(villano) {
   align-items: center;
   gap: 0.7rem;
   padding: 0.4rem 0.65rem;
-  background: rgba(8, 15, 26, 0.92);
+  background: rgba(19, 35, 92, 0.92);
   border: var(--border);
   border-radius: var(--radius-sm);
   color: var(--color-text-muted);
@@ -992,7 +992,7 @@ function textoGuaridas(villano) {
 
 .icon-btn--danger:hover {
   background: var(--color-danger-soft);
-  border-color: rgba(229, 72, 77, 0.5);
+  border-color: rgba(255, 92, 92, 0.5);
 }
 
 .icon-btn svg {

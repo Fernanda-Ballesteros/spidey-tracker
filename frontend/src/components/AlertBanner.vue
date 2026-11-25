@@ -70,7 +70,7 @@ const alertsStore = useAlertsStore()
 
 .alert--error {
   background: rgba(38, 14, 20, 0.96);
-  border-color: rgba(229, 72, 77, 0.6);
+  border-color: rgba(255, 92, 92, 0.6);
 }
 
 .alert__icon {

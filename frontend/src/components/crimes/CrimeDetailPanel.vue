@@ -285,7 +285,7 @@ const amenazaVillano = computed(() => threatMeta(props.crime?.villain?.threatLev
   height: 40px;
   place-items: center;
   background: var(--color-brand-soft);
-  border: 1px solid rgba(255, 90, 95, 0.4);
+  border: 1px solid rgba(226, 59, 59, 0.4);
   border-radius: var(--radius-sm);
   color: var(--color-brand);
 }
@@ -316,7 +316,7 @@ const amenazaVillano = computed(() => threatMeta(props.crime?.villain?.threatLev
 .detail__link {
   padding: 0.4rem 0.65rem;
   background: var(--color-accent-soft);
-  border: 1px solid rgba(62, 199, 223, 0.35);
+  border: 1px solid rgba(127, 196, 238, 0.35);
   border-radius: var(--radius-sm);
   color: var(--color-accent);
   font-family: var(--font-mono);
@@ -326,7 +326,7 @@ const amenazaVillano = computed(() => threatMeta(props.crime?.villain?.threatLev
 }
 
 .detail__link:hover {
-  background: rgba(62, 199, 223, 0.22);
+  background: rgba(127, 196, 238, 0.22);
 }
 
 .detail__foot {

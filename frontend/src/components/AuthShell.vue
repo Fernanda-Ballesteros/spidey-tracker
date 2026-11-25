@@ -20,15 +20,15 @@
             <path
               d="M32 2 60 11v24c0 18-12 29-28 35C16 64 4 53 4 35V11Z"
               fill="#2a1118"
-              stroke="#ff5a5f"
+              stroke="#e23b3b"
               stroke-width="2"
             />
-            <g fill="none" stroke="#ff5a5f" stroke-width="2" stroke-linecap="round">
+            <g fill="none" stroke="#e23b3b" stroke-width="2" stroke-linecap="round">
               <path d="M27 30 15 22M26 35 11 33M26 40 13 48M28 44 18 56" />
               <path d="M37 30 49 22M38 35 53 33M38 40 51 48M36 44 46 56" />
             </g>
-            <ellipse cx="32" cy="37" rx="6" ry="9" fill="#ff5a5f" />
-            <circle cx="32" cy="25" r="5" fill="#ff5a5f" />
+            <ellipse cx="32" cy="37" rx="6" ry="9" fill="#e23b3b" />
+            <circle cx="32" cy="25" r="5" fill="#e23b3b" />
           </svg>
 
           <span class="auth-rev">REV.04</span>
@@ -57,8 +57,8 @@
   place-items: center;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% 8%, rgba(94, 225, 255, 0.22), transparent 34%),
-    radial-gradient(circle at 50% 110%, rgba(255, 90, 95, 0.12), transparent 42%),
+    radial-gradient(circle at 50% 8%, rgba(168, 220, 255, 0.22), transparent 34%),
+    radial-gradient(circle at 50% 110%, rgba(226, 59, 59, 0.12), transparent 42%),
     linear-gradient(160deg, #0c2b8f 0%, #1b44c9 48%, #081538 100%);
 }
 
@@ -77,11 +77,11 @@
   z-index: 1;
   width: min(100%, 500px);
   padding: 10px;
-  background: linear-gradient(180deg, #58d5ea 0%, #1d6f96 100%);
+  background: linear-gradient(180deg, #a8dcff 0%, #1d6f96 100%);
   border-radius: 20px;
   box-shadow:
     0 26px 80px rgba(0, 0, 0, 0.55),
-    0 0 45px rgba(62, 199, 223, 0.18);
+    0 0 45px rgba(127, 196, 238, 0.18);
 }
 
 .auth-terminal__bar {
@@ -118,8 +118,8 @@
 
 .auth-card {
   padding: clamp(1.25rem, 4vw, 1.9rem);
-  background: linear-gradient(180deg, rgba(16, 26, 44, 0.98), rgba(8, 15, 26, 0.99));
-  border: 1px solid rgba(62, 199, 223, 0.32);
+  background: linear-gradient(180deg, rgba(16, 26, 44, 0.98), rgba(19, 35, 92, 0.99));
+  border: 1px solid rgba(127, 196, 238, 0.32);
   border-radius: 12px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
@@ -137,7 +137,7 @@
 .auth-logo {
   width: 68px;
   height: 76px;
-  filter: drop-shadow(0 0 14px rgba(255, 90, 95, 0.25));
+  filter: drop-shadow(0 0 14px rgba(226, 59, 59, 0.25));
 }
 
 .auth-rev {
@@ -156,7 +156,7 @@
   font-size: clamp(1.6rem, 6vw, 2.2rem);
   font-weight: 700;
   letter-spacing: 0.12em;
-  text-shadow: 0 0 24px rgba(62, 199, 223, 0.25);
+  text-shadow: 0 0 24px rgba(127, 196, 238, 0.25);
 }
 
 .auth-tagline {

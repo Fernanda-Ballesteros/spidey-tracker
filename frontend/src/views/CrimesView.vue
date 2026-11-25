@@ -670,7 +670,7 @@ async function confirmarEliminar() {
 .map-card__live {
   padding: 0.15rem 0.5rem;
   background: var(--color-accent-soft);
-  border: 1px solid rgba(62, 199, 223, 0.35);
+  border: 1px solid rgba(127, 196, 238, 0.35);
   border-radius: var(--radius-sm);
   color: var(--color-accent);
 }
@@ -695,7 +695,7 @@ async function confirmarEliminar() {
   align-items: center;
   gap: 0.3rem 0.8rem;
   padding: 0.45rem 0.65rem;
-  background: rgba(8, 15, 26, 0.92);
+  background: rgba(19, 35, 92, 0.92);
   border: var(--border);
   border-radius: var(--radius-sm);
   color: var(--color-text-muted);
@@ -802,7 +802,7 @@ async function confirmarEliminar() {
 
 .filters__grid {
   display: grid;
-  grid-template-columns: minmax(180px, 2fr) repeat(4, minmax(110px, 1fr));
+  grid-template-columns: minmax(0, 2fr) repeat(4, minmax(0, 1fr));
   gap: 0.7rem;
 }
 
@@ -878,7 +878,7 @@ async function confirmarEliminar() {
 .table-panel__count {
   padding: 0.15rem 0.55rem;
   background: var(--color-accent-soft);
-  border: 1px solid rgba(62, 199, 223, 0.35);
+  border: 1px solid rgba(127, 196, 238, 0.35);
   border-radius: var(--radius-sm);
   color: var(--color-accent);
   font-family: var(--font-mono);
@@ -939,9 +939,20 @@ async function confirmarEliminar() {
   font-weight: 600;
 }
 
+/* Fija la columna de acciones a la derecha: en pantallas chicas la tabla
+   se desplaza de lado, pero editar y eliminar siempre quedan a la vista. */
 .col-actions {
   width: 1%;
   text-align: right;
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  background: var(--color-surface);
+  box-shadow: -8px 0 12px -8px rgba(0, 0, 0, 0.6);
+}
+
+.table-scroll .data-table thead th.col-actions {
+  z-index: 3;
 }
 
 .row-actions {
@@ -975,7 +986,7 @@ async function confirmarEliminar() {
 
 .icon-btn--danger:hover {
   background: var(--color-danger-soft);
-  border-color: rgba(229, 72, 77, 0.5);
+  border-color: rgba(255, 92, 92, 0.5);
 }
 
 .icon-btn svg {

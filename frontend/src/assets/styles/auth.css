@@ -10,8 +10,8 @@
 .auth-alert {
   padding: 0.7rem 0.8rem;
   margin-bottom: 1rem;
-  background: rgba(229, 72, 77, 0.1);
-  border: 1px solid rgba(229, 72, 77, 0.5);
+  background: rgba(255, 92, 92, 0.1);
+  border: 1px solid rgba(255, 92, 92, 0.5);
   border-left: 3px solid var(--color-danger);
   border-radius: var(--radius-sm);
   color: #ffc2c4;
@@ -101,7 +101,7 @@
 .input--error,
 .input--error:focus {
   border-color: var(--color-danger);
-  box-shadow: 0 0 0 2px rgba(229, 72, 77, 0.12);
+  box-shadow: 0 0 0 2px rgba(255, 92, 92, 0.12);
 }
 
 .auth-field__error {

@@ -32,7 +32,7 @@ Variables de `backend/.env`:
 | `JWT_EXPIRES_IN` | Duración del token (opcional, por defecto `1d`) |
 | `FRONTEND_ORIGINS` | Orígenes permitidos por CORS separados por coma (vacío = todos) |
 | `PORT` | Puerto del servidor (opcional, por defecto `3000`) |
-| `SEED_USER_PASSWORD` | Contraseña de `tester@spideytracker.com` creada por el seed |
+| `SEED_USER_PASSWORD` | Contraseña de `spidey@spideytracker.com` creada por el seed |
 | `SEED_ADMIN_PASSWORD` | Contraseña de `admin@spideytracker.com` creada por el seed |
 
 ### 2. Frontend

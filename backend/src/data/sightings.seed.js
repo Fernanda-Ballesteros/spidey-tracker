@@ -9,7 +9,7 @@ module.exports = [
         hoursAgo: 5,
         status: "confirmado",
         witness: "Ned Leeds",
-        notes: "Se le vio balanceándose entre los cables del puente rumbo a Manhattan.",
+        notes: "Se le vio balanceándose entre los arcos de la Calzada rumbo al centro.",
     },
     {
         key: "s2",
@@ -25,7 +25,7 @@ module.exports = [
         hoursAgo: 30,
         status: "por-verificar",
         witness: "Turista anónimo",
-        notes: "Un grupo de turistas grabó una figura enmascarada sobre los anuncios luminosos.",
+        notes: "Un grupo de turistas grabó una figura enmascarada sobre el Palacio Municipal.",
     },
     {
         key: "s4",
@@ -33,7 +33,7 @@ module.exports = [
         hoursAgo: 52,
         status: "confirmado",
         witness: "Guardia de seguridad",
-        notes: "Spider-Man atrapó un dron fuera de control cerca de la gran esfera.",
+        notes: "Spider-Man atrapó un dron fuera de control cerca de la presa.",
     },
     {
         key: "s5",
@@ -49,7 +49,7 @@ module.exports = [
         hoursAgo: 100,
         status: "confirmado",
         witness: "Cámara de tránsito",
-        notes: "Interceptó una camioneta sospechosa en la entrada del puente.",
+        notes: "Interceptó una camioneta sospechosa frente al Arco de la Calzada.",
     },
     {
         key: "s7",

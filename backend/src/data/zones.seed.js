@@ -1,70 +1,65 @@
 "use strict";
 
-// Polígonos aproximados, en formato [longitud, latitud].
+// Polígonos aproximados en León, Guanajuato, en formato [longitud, latitud].
 // Cada anillo termina en el mismo punto con el que empieza.
 module.exports = [
     {
-        name: "Queens",
-        description: "Zona perimetral de Queens, el barrio de Peter Parker.",
+        name: "Centro Histórico",
+        description: "Plaza Principal, Calzada de los Héroes y Barrio Arriba; zona con más avistamientos.",
         riskLevel: "alto",
         area: {
             type: "Polygon",
             coordinates: [[
-                [-73.962, 40.770],
-                [-73.700, 40.800],
-                [-73.700, 40.590],
-                [-73.850, 40.540],
-                [-73.962, 40.600],
-                [-73.962, 40.770],
+                [-101.692, 21.115],
+                [-101.672, 21.115],
+                [-101.672, 21.131],
+                [-101.692, 21.131],
+                [-101.692, 21.115],
             ]],
         },
     },
     {
-        name: "Manhattan",
-        description: "Isla de Manhattan, donde están el Daily Bugle y la Torre Stark.",
+        name: "Zona Piel",
+        description: "Zona comercial del calzado y la Central de Autobuses.",
+        riskLevel: "medio",
+        area: {
+            type: "Polygon",
+            coordinates: [[
+                [-101.678, 21.131],
+                [-101.662, 21.131],
+                [-101.662, 21.140],
+                [-101.678, 21.140],
+                [-101.678, 21.131],
+            ]],
+        },
+    },
+    {
+        name: "Ciudad Industrial",
+        description: "Naves industriales y el Blvd. López Mateos, con actividad criminal constante.",
         riskLevel: "alto",
         area: {
             type: "Polygon",
             coordinates: [[
-                [-74.019, 40.700],
-                [-73.972, 40.710],
-                [-73.929, 40.800],
-                [-73.910, 40.873],
-                [-73.933, 40.878],
-                [-73.960, 40.820],
-                [-74.010, 40.720],
-                [-74.019, 40.700],
+                [-101.660, 21.085],
+                [-101.630, 21.085],
+                [-101.630, 21.105],
+                [-101.660, 21.105],
+                [-101.660, 21.085],
             ]],
         },
     },
     {
-        name: "Brooklyn",
-        description: "Distrito de Brooklyn, con puentes y muelles de actividad constante.",
-        riskLevel: "medio",
+        name: "Zona Campestre",
+        description: "Blvd. Campestre, Plaza Mayor y Jardines del Moral.",
+        riskLevel: "bajo",
         area: {
             type: "Polygon",
             coordinates: [[
-                [-74.040, 40.570],
-                [-73.860, 40.570],
-                [-73.860, 40.700],
-                [-73.985, 40.704],
-                [-74.040, 40.640],
-                [-74.040, 40.570],
-            ]],
-        },
-    },
-    {
-        name: "Midtown Oeste",
-        description: "Hell's Kitchen y alrededores de Times Square.",
-        riskLevel: "medio",
-        area: {
-            type: "Polygon",
-            coordinates: [[
-                [-74.005, 40.755],
-                [-73.975, 40.755],
-                [-73.975, 40.775],
-                [-74.005, 40.775],
-                [-74.005, 40.755],
+                [-101.705, 21.140],
+                [-101.685, 21.140],
+                [-101.685, 21.160],
+                [-101.705, 21.160],
+                [-101.705, 21.140],
             ]],
         },
     },

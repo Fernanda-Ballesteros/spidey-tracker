@@ -1,8 +1,8 @@
 // Configuración compartida por todos los mapas de la aplicación.
 
-// Centro por defecto: Manhattan, zona principal de los datos de prueba.
-export const DEFAULT_CENTER = [40.758, -73.9855]
-export const DEFAULT_ZOOM = 11
+// Centro por defecto: León, Guanajuato, zona principal de los datos de prueba.
+export const DEFAULT_CENTER = [21.128, -101.68]
+export const DEFAULT_ZOOM = 12
 
 export const MAP_TILE_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 

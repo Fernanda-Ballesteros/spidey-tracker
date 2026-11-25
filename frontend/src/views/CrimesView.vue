@@ -256,7 +256,7 @@ async function confirmarEliminar() {
       <div>
         <h1>Crímenes</h1>
         <p class="page-head__sub">
-          Registro de incidentes hostiles en Nueva York // cuadrante activo
+          Registro de incidentes hostiles en León, Gto. // cuadrante activo
         </p>
       </div>
 
@@ -279,7 +279,7 @@ async function confirmarEliminar() {
       <div class="crimes-main">
         <section class="map-card" aria-label="Mapa de incidentes">
           <header class="map-card__head">
-            <h2>Despliegue geo-táctico // cobertura total Manhattan</h2>
+            <h2>Despliegue geo-táctico // cobertura total León</h2>
             <p>
               <span>Modo: solo consulta</span>
               <span class="map-card__live">Telemetría activa</span>

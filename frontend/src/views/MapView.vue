@@ -525,7 +525,7 @@ onBeforeUnmount(() => {
       <div>
         <p class="page-head__eyebrow">// SPYDER_CORE · MAPA TÁCTICO</p>
         <h1>Centro de Mando Táctico</h1>
-        <p class="page-head__sub">Vigilancia urbana // Manhattan activo</p>
+        <p class="page-head__sub">Vigilancia urbana // León activo</p>
       </div>
 
       <div class="page-head__actions">

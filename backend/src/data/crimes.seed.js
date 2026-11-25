@@ -28,7 +28,7 @@ module.exports = [
     {
         location: "cr-redhook",
         type: "secuestro",
-        description: "Secuestro de un empresario en el muelle; testigos vieron un planeador sobre las bodegas.",
+        description: "Secuestro de un empresario en una nave industrial; testigos vieron un planeador sobre las bodegas.",
         hoursAgo: 12,
         severity: "critica",
         status: "en-proceso",
@@ -38,7 +38,7 @@ module.exports = [
     {
         location: "cr-jay",
         type: "balacera",
-        description: "Balacera entre bandas rivales en el andén de la estación, con varios heridos.",
+        description: "Balacera entre bandas rivales en los andenes de la terminal, con varios heridos.",
         hoursAgo: 40,
         severity: "alta",
         status: "reportado",
@@ -58,7 +58,7 @@ module.exports = [
     {
         location: "cr-redhook",
         type: "incendio",
-        description: "Incendio provocado en una bodega del muelle; se hallaron restos de bombas calabaza.",
+        description: "Incendio provocado en una bodega de Ciudad Industrial; se hallaron restos de bombas calabaza.",
         hoursAgo: 8,
         severity: "alta",
         status: "reportado",

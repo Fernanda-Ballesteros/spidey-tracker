@@ -40,7 +40,7 @@ module.exports = [
         name: "Kingpin",
         alias: "Wilson Fisk",
         history:
-            "Magnate y cabeza del crimen organizado de Nueva York. Controla negocios legales como fachada de su imperio criminal.",
+            "Magnate y cabeza del crimen organizado de León. Controla negocios legales como fachada de su imperio criminal.",
         powers: ["fuerza física", "imperio criminal"],
         threatLevel: "alto",
         status: "activo",

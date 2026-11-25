@@ -248,7 +248,7 @@ async function confirmarEliminar() {
           </template>
         </BaseMap>
 
-        <span class="map-card__badge">Manhattan central</span>
+        <span class="map-card__badge">León centro</span>
       </div>
 
       <footer class="map-legend">

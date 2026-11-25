@@ -1,5 +1,8 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import api from '@/api/axios'
+import { useAlertsStore } from '@/stores/alerts'
+import { getErrorMessage } from '@/utils/errors'
 import BaseMap from '@/components/map/BaseMap.vue'
 import Chip from '@/components/Chip.vue'
 import ConfirmModal from '@/components/ConfirmModal.vue'
@@ -14,12 +17,10 @@ import {
   threatMeta,
   villainStatusMeta,
 } from '@/utils/villainConfig'
-// TODO(integración): quitar los datos de ejemplo y usar la API.
-import { HIDEOUTS_MOCK, VILLAINS_MOCK } from '@/mocks/villains'
+const alerts = useAlertsStore()
 
 /* ---------- Lista y estado de carga ---------- */
-// TODO(integración): reemplazar por un store de Pinia con GET /villains.
-const villanos = ref(VILLAINS_MOCK)
+const villanos = ref([])
 const cargando = ref(false)
 // Cuando falle la carga: { message, details } (ver utils/errors.js).
 const error = ref(null)
@@ -29,23 +30,75 @@ const busqueda = ref('')
 const amenaza = ref('all')
 const estado = ref('all')
 
+// Espera a que el usuario deje de escribir antes de pedir la lista.
+let timerBusqueda = null
+
 function cargarVillanos() {
-  // TODO(integración): GET /villains?search=&threatLevel=&status=
-  // enviando { busqueda, amenaza, estado }. El filtrado lo hace el backend.
+  clearTimeout(timerBusqueda)
+  timerBusqueda = setTimeout(pedirVillanos, 300)
+}
+
+// GET /villains?search=&threatLevel=&status=. El filtrado lo hace el backend.
+async function pedirVillanos() {
+  cargando.value = true
+  error.value = null
+
+  try {
+    const { data } = await api.get('/villains', {
+      params: { search: busqueda.value.trim(), threatLevel: amenaza.value, status: estado.value },
+    })
+    villanos.value = data
+
+    // Si el seleccionado ya no está en la lista, se selecciona el primero.
+    if (!data.some((villano) => villano.id === seleccionadoId.value)) {
+      seleccionadoId.value = null
+      if (data[0]) seleccionarVillano(data[0])
+    }
+  } catch (err) {
+    error.value = getErrorMessage(err)
+  } finally {
+    cargando.value = false
+  }
 }
 
 /* ---------- Villano seleccionado (detalle + mapa) ---------- */
-const seleccionadoId = ref(VILLAINS_MOCK[0]?.id ?? null)
+const seleccionadoId = ref(null)
 const cargandoDetalle = ref(false)
+// Historial de crímenes del villano seleccionado (viene de GET /villains/:id).
+const crimenesSeleccionado = ref([])
 
-const seleccionado = computed(
-  () => villanos.value.find((villano) => villano.id === seleccionadoId.value) || null,
-)
+const seleccionado = computed(() => {
+  const villano = villanos.value.find((item) => item.id === seleccionadoId.value)
+  return villano ? { ...villano, crimes: crimenesSeleccionado.value } : null
+})
 
-function seleccionarVillano(villano) {
+async function seleccionarVillano(villano) {
   seleccionadoId.value = villano.id
-  // TODO(integración): GET /villains/:id para traer `crimes` y las guaridas pobladas.
+  crimenesSeleccionado.value = []
+  cargandoDetalle.value = true
+
+  try {
+    const { data } = await api.get(`/villains/${villano.id}`)
+    // Evita pintar el detalle de otro villano si el usuario ya cambió la selección.
+    if (seleccionadoId.value === villano.id) {
+      crimenesSeleccionado.value = data.crimes || []
+    }
+  } catch (err) {
+    mostrarError(err)
+  } finally {
+    cargandoDetalle.value = false
+  }
 }
+
+function mostrarError(err) {
+  const { message, details } = getErrorMessage(err)
+  alerts.error(message, details)
+}
+
+onMounted(() => {
+  pedirVillanos()
+  cargarGuaridas()
+})
 
 // Marcadores de guaridas del villano seleccionado (formato que pide BaseMap).
 const marcadoresGuaridas = computed(() =>
@@ -66,8 +119,17 @@ const villanoEditando = ref(null)
 const guardando = ref(false)
 // Errores por campo del formulario. Ej: { name: 'Ya existe un villano con ese nombre' }.
 const erroresForm = ref({})
-// TODO(integración): GET /locations?category=guarida
-const guaridasDisponibles = ref(HIDEOUTS_MOCK)
+// Solo ubicaciones de categoría "guarida" (el backend rechaza otras).
+const guaridasDisponibles = ref([])
+
+async function cargarGuaridas() {
+  try {
+    const { data } = await api.get('/locations', { params: { category: 'guarida' } })
+    guaridasDisponibles.value = data
+  } catch (err) {
+    mostrarError(err)
+  }
+}
 
 function abrirCrear() {
   villanoEditando.value = null
@@ -85,15 +147,31 @@ function cerrarForm() {
   formAbierto.value = false
 }
 
-function guardarVillano() {
-  // El modal entrega aquí el cuerpo listo: { name, alias, history, powers,
-  // threatLevel, status, knownLocations: [ids] }.
-  // TODO(integración):
-  //   - Crear:  POST /villains            (si villanoEditando es null)
-  //   - Editar: PATCH /villains/:id       (usar villanoEditando.id)
-  //   - Éxito: alertsStore.success('Villano guardado correctamente.') y cerrarForm()
-  //   - Error: alertsStore.error(message, details) y llenar erroresForm
-  cerrarForm()
+// El modal entrega el cuerpo listo: { name, alias, history, powers,
+// threatLevel, status, knownLocations: [ids] }.
+async function guardarVillano(payload) {
+  guardando.value = true
+  erroresForm.value = {}
+
+  try {
+    const editando = villanoEditando.value
+    const { data } = editando
+      ? await api.patch(`/villains/${editando.id}`, payload)
+      : await api.post('/villains', payload)
+
+    alerts.success(`Villano "${data.name}" guardado correctamente.`)
+    cerrarForm()
+    await pedirVillanos()
+    seleccionarVillano(data)
+  } catch (err) {
+    // 409 = ya existe un villano con ese nombre.
+    if (err.response?.status === 409) {
+      erroresForm.value = { name: getErrorMessage(err).message }
+    }
+    mostrarError(err)
+  } finally {
+    guardando.value = false
+  }
 }
 
 /* ---------- Eliminar ---------- */
@@ -108,12 +186,23 @@ function cancelarEliminar() {
   villanoAEliminar.value = null
 }
 
-function confirmarEliminar() {
-  // TODO(integración):
-  //   - DELETE /villains/:id (usar villanoAEliminar.id)
-  //   - Éxito: alertsStore.success('Villano eliminado correctamente.')
-  //   - Error: alertsStore.error(message, details)
-  villanoAEliminar.value = null
+async function confirmarEliminar() {
+  const villano = villanoAEliminar.value
+  if (!villano) return
+
+  eliminando.value = true
+
+  try {
+    // Sus crímenes se conservan, pero quedan sin villano asignado.
+    await api.delete(`/villains/${villano.id}`)
+    alerts.success(`Villano "${villano.name}" eliminado correctamente.`)
+    villanoAEliminar.value = null
+    await pedirVillanos()
+  } catch (err) {
+    mostrarError(err)
+  } finally {
+    eliminando.value = false
+  }
 }
 
 /* ---------- Ayudas para la tabla ---------- */

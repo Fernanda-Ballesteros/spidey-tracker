@@ -168,7 +168,7 @@ liste ubicaciones de la categoría que corresponde (filtrar con `?category=`).
   `knownLocations` máximo 20 ids; `alias` máximo 80.
 - Crímenes: `villain` y `sighting` aceptan `null` en PATCH para quitar la relación.
 - PATCH exige al menos un campo. Todos los PATCH son parciales.
-- Usuario de prueba del seed: tester@spideytracker.com (la contraseña está en backend/src/data/users.seed.js).
+- Usuario de prueba del seed: spidey@spideytracker.com (contraseña en SEED_USER_PASSWORD del backend/.env).
   Admin: admin@spideytracker.com.
 ## Estilo visual
 Definido por los diseños exportados de Stitch/Gemini que el equipo coloque en `/design`.

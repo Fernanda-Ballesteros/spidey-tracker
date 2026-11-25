@@ -1,5 +1,8 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import api from '@/api/axios'
+import { useAlertsStore } from '@/stores/alerts'
+import { getErrorMessage } from '@/utils/errors'
 import BaseMap from '@/components/map/BaseMap.vue'
 import Chip from '@/components/Chip.vue'
 import ConfirmModal from '@/components/ConfirmModal.vue'
@@ -11,12 +14,10 @@ import {
   SIGHTING_STATUS_OPTIONS,
   sightingStatusMeta,
 } from '@/utils/sightingConfig'
-// TODO(integración): quitar los datos de ejemplo y usar la API.
-import { SIGHTINGS_LIST_MOCK, SIGHTING_LOCATIONS_MOCK } from '@/mocks/sightings'
+const alerts = useAlertsStore()
 
 /* ---------- Lista y estado de carga ---------- */
-// TODO(integración): reemplazar por un store de Pinia con GET /sightings.
-const avistamientos = ref(SIGHTINGS_LIST_MOCK)
+const avistamientos = ref([])
 const cargando = ref(false)
 // Cuando falle la carga: { message, details } (ver utils/errors.js).
 const error = ref(null)
@@ -30,14 +31,63 @@ const ubicacion = ref('all')
 const desde = ref('')
 const hasta = ref('')
 
-// TODO(integración): GET /locations?category=avistamiento
-const ubicacionesAvistamiento = ref(SIGHTING_LOCATIONS_MOCK)
+// Solo ubicaciones de categoría "avistamiento" (el backend rechaza otras).
+const ubicacionesAvistamiento = ref([])
+
+async function cargarUbicaciones() {
+  try {
+    const { data } = await api.get('/locations', { params: { category: 'avistamiento' } })
+    ubicacionesAvistamiento.value = data
+  } catch (err) {
+    mostrarError(err)
+  }
+}
+
+// Espera a que el usuario deje de escribir antes de pedir la lista.
+let timerBusqueda = null
 
 function cargarAvistamientos() {
-  // TODO(integración): GET /sightings?search=&status=&location=&from=&to=
-  // enviando { busqueda, estado, ubicacion, desde, hasta }.
-  // El filtrado lo hace el backend.
+  clearTimeout(timerBusqueda)
+  timerBusqueda = setTimeout(pedirAvistamientos, 300)
 }
+
+// GET /sightings?search=&status=&location=&from=&to=. El filtrado lo hace el backend.
+async function pedirAvistamientos() {
+  cargando.value = true
+  error.value = null
+
+  try {
+    const { data } = await api.get('/sightings', {
+      params: {
+        search: busqueda.value.trim(),
+        status: estado.value,
+        location: ubicacion.value,
+        // Fechas vacías no se envían (el backend no las acepta como texto vacío).
+        from: desde.value || undefined,
+        to: hasta.value || undefined,
+      },
+    })
+    avistamientos.value = data
+
+    if (!data.some((avistamiento) => avistamiento.id === seleccionadoId.value)) {
+      seleccionadoId.value = data[0]?.id ?? null
+    }
+  } catch (err) {
+    error.value = getErrorMessage(err)
+  } finally {
+    cargando.value = false
+  }
+}
+
+function mostrarError(err) {
+  const { message, details } = getErrorMessage(err)
+  alerts.error(message, details)
+}
+
+onMounted(() => {
+  pedirAvistamientos()
+  cargarUbicaciones()
+})
 
 function limpiarFiltros() {
   busqueda.value = ''
@@ -49,7 +99,7 @@ function limpiarFiltros() {
 }
 
 /* ---------- Avistamiento seleccionado (popup del mapa) ---------- */
-const seleccionadoId = ref(SIGHTINGS_LIST_MOCK[0]?.id ?? null)
+const seleccionadoId = ref(null)
 
 function seleccionarAvistamiento(avistamiento) {
   seleccionadoId.value = avistamiento.id
@@ -98,15 +148,28 @@ function cerrarForm() {
   formAbierto.value = false
 }
 
-function guardarAvistamiento() {
-  // El modal entrega aquí el cuerpo listo: { location, seenAt (ISO), status,
-  // witness, notes }.
-  // TODO(integración):
-  //   - Crear:  POST /sightings            (si avistamientoEditando es null)
-  //   - Editar: PATCH /sightings/:id       (usar avistamientoEditando.id)
-  //   - Éxito: alertsStore.success('Avistamiento registrado correctamente.') y cerrarForm()
-  //   - Error: alertsStore.error(message, details) y llenar erroresForm
-  cerrarForm()
+// El modal entrega el cuerpo listo: { location, seenAt (ISO), status, witness, notes }.
+async function guardarAvistamiento(payload) {
+  guardando.value = true
+  erroresForm.value = {}
+
+  try {
+    const editando = avistamientoEditando.value
+    const { data } = editando
+      ? await api.patch(`/sightings/${editando.id}`, payload)
+      : await api.post('/sightings', payload)
+
+    alerts.success(
+      editando ? 'Avistamiento actualizado correctamente.' : 'Avistamiento registrado correctamente.',
+    )
+    cerrarForm()
+    seleccionadoId.value = data.id
+    await pedirAvistamientos()
+  } catch (err) {
+    mostrarError(err)
+  } finally {
+    guardando.value = false
+  }
 }
 
 /* ---------- Eliminar ---------- */
@@ -121,12 +184,23 @@ function cancelarEliminar() {
   avistamientoAEliminar.value = null
 }
 
-function confirmarEliminar() {
-  // TODO(integración):
-  //   - DELETE /sightings/:id (usar avistamientoAEliminar.id)
-  //   - Éxito: alertsStore.success('Avistamiento eliminado correctamente.')
-  //   - Error: alertsStore.error(message, details)
-  avistamientoAEliminar.value = null
+async function confirmarEliminar() {
+  const avistamiento = avistamientoAEliminar.value
+  if (!avistamiento) return
+
+  eliminando.value = true
+
+  try {
+    // Los crímenes que lo referenciaban quedan sin avistamiento.
+    await api.delete(`/sightings/${avistamiento.id}`)
+    alerts.success('Avistamiento eliminado correctamente.')
+    avistamientoAEliminar.value = null
+    await pedirAvistamientos()
+  } catch (err) {
+    mostrarError(err)
+  } finally {
+    eliminando.value = false
+  }
 }
 </script>
 

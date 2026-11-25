@@ -70,7 +70,6 @@ const amenazaVillano = computed(() => threatMeta(props.crime?.villain?.threatLev
 
         <section class="detail__cell">
           <h4 class="detail__label">Zona vinculada</h4>
-          <!-- TODO(integración): las zonas vienen de GET /locations/:id (campo `zones`). -->
           <template v-if="zonas.length">
             <div v-for="zona in zonas" :key="zona.id" class="detail__zone">
               <strong>{{ zona.name }}</strong>

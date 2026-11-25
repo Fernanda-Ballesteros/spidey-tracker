@@ -1,5 +1,8 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import api from '@/api/axios'
+import { useAlertsStore } from '@/stores/alerts'
+import { getErrorMessage } from '@/utils/errors'
 import BaseMap from '@/components/map/BaseMap.vue'
 import Chip from '@/components/Chip.vue'
 import ConfirmModal from '@/components/ConfirmModal.vue'
@@ -17,13 +20,10 @@ import {
 } from '@/utils/crimeConfig'
 import { toLeaflet } from '@/utils/coordinates'
 import { formatDateTime } from '@/utils/dates'
-// TODO(integración): quitar los datos de ejemplo y usar la API.
-import { CRIMES_MOCK, CRIME_LOCATIONS_MOCK, SIGHTINGS_MOCK } from '@/mocks/crimes'
-import { VILLAINS_MOCK } from '@/mocks/villains'
+const alerts = useAlertsStore()
 
 /* ---------- Lista y estado de carga ---------- */
-// TODO(integración): reemplazar por un store de Pinia con GET /crimes.
-const crimenes = ref(CRIMES_MOCK)
+const crimenes = ref([])
 const cargando = ref(false)
 // Cuando falle la carga: { message, details } (ver utils/errors.js).
 const error = ref(null)
@@ -38,14 +38,73 @@ const villano = ref('all')
 const desde = ref('')
 const hasta = ref('')
 
-// TODO(integración): GET /villains para llenar el filtro y el formulario.
-const villanosDisponibles = ref(VILLAINS_MOCK)
+// Villanos para el filtro y el formulario.
+const villanosDisponibles = ref([])
+
+// Espera a que el usuario deje de escribir antes de pedir la lista.
+let timerBusqueda = null
 
 function cargarCrimenes() {
-  // TODO(integración): GET /crimes?search=&type=&severity=&status=&villain=&from=&to=
-  // enviando { busqueda, tipo, gravedad, estado, villano, desde, hasta }.
-  // El filtrado lo hace el backend.
+  clearTimeout(timerBusqueda)
+  timerBusqueda = setTimeout(pedirCrimenes, 300)
 }
+
+// GET /crimes?search=&type=&severity=&status=&villain=&from=&to=. El filtrado lo hace el backend.
+async function pedirCrimenes() {
+  cargando.value = true
+  error.value = null
+
+  try {
+    const { data } = await api.get('/crimes', {
+      params: {
+        search: busqueda.value.trim(),
+        type: tipo.value,
+        severity: gravedad.value,
+        status: estado.value,
+        villain: villano.value,
+        // Fechas vacías no se envían (el backend no las acepta como texto vacío).
+        from: desde.value || undefined,
+        to: hasta.value || undefined,
+      },
+    })
+    crimenes.value = data
+
+    if (!data.some((crimen) => crimen.id === seleccionadoId.value)) {
+      seleccionadoId.value = null
+      if (data[0]) seleccionarCrimen(data[0])
+    }
+  } catch (err) {
+    error.value = getErrorMessage(err)
+  } finally {
+    cargando.value = false
+  }
+}
+
+// Listas para los selectores del formulario y del filtro.
+async function cargarCatalogos() {
+  try {
+    const [villanos, ubicaciones, avistamientos] = await Promise.all([
+      api.get('/villains'),
+      api.get('/locations', { params: { category: 'crimen' } }),
+      api.get('/sightings'),
+    ])
+    villanosDisponibles.value = villanos.data
+    ubicacionesCrimen.value = ubicaciones.data
+    avistamientosDisponibles.value = avistamientos.data
+  } catch (err) {
+    mostrarError(err)
+  }
+}
+
+function mostrarError(err) {
+  const { message, details } = getErrorMessage(err)
+  alerts.error(message, details)
+}
+
+onMounted(() => {
+  pedirCrimenes()
+  cargarCatalogos()
+})
 
 function limpiarFiltros() {
   busqueda.value = ''
@@ -59,16 +118,36 @@ function limpiarFiltros() {
 }
 
 /* ---------- Crimen seleccionado (detalle + mapa) ---------- */
-const seleccionadoId = ref(CRIMES_MOCK[0]?.id ?? null)
+const seleccionadoId = ref(null)
 const cargandoDetalle = ref(false)
+// Zonas donde cae la ubicación del crimen seleccionado (vienen de GET /locations/:id).
+const zonasSeleccionado = ref([])
 
-const seleccionado = computed(
-  () => crimenes.value.find((crimen) => crimen.id === seleccionadoId.value) || null,
-)
+const seleccionado = computed(() => {
+  const crimen = crimenes.value.find((item) => item.id === seleccionadoId.value)
+  if (!crimen) return null
+  return { ...crimen, location: { ...crimen.location, zones: zonasSeleccionado.value } }
+})
 
-function seleccionarCrimen(crimen) {
+async function seleccionarCrimen(crimen) {
   seleccionadoId.value = crimen.id
-  // TODO(integración): GET /crimes/:id y GET /locations/:id (para traer las zonas).
+  zonasSeleccionado.value = []
+
+  if (!crimen.location?.id) return
+
+  cargandoDetalle.value = true
+
+  try {
+    const { data } = await api.get(`/locations/${crimen.location.id}`)
+    // Evita pintar las zonas de otro crimen si el usuario ya cambió la selección.
+    if (seleccionadoId.value === crimen.id) {
+      zonasSeleccionado.value = data.zones || []
+    }
+  } catch (err) {
+    mostrarError(err)
+  } finally {
+    cargandoDetalle.value = false
+  }
 }
 
 // El marcador guarda el crimen completo en `data`.
@@ -97,10 +176,9 @@ const crimenEditando = ref(null)
 const guardando = ref(false)
 // Errores por campo del formulario. Ej: { description: 'Mínimo 10 caracteres' }.
 const erroresForm = ref({})
-// TODO(integración): GET /locations?category=crimen
-const ubicacionesCrimen = ref(CRIME_LOCATIONS_MOCK)
-// TODO(integración): GET /sightings
-const avistamientosDisponibles = ref(SIGHTINGS_MOCK)
+// Solo ubicaciones de categoría "crimen" (el backend rechaza otras).
+const ubicacionesCrimen = ref([])
+const avistamientosDisponibles = ref([])
 
 function abrirCrear() {
   crimenEditando.value = null
@@ -118,15 +196,27 @@ function cerrarForm() {
   formAbierto.value = false
 }
 
-function guardarCrimen() {
-  // El modal entrega aquí el cuerpo listo: { location, type, description,
-  // occurredAt (ISO), severity, status, villain, sighting }.
-  // TODO(integración):
-  //   - Crear:  POST /crimes            (si crimenEditando es null)
-  //   - Editar: PATCH /crimes/:id       (usar crimenEditando.id)
-  //   - Éxito: alertsStore.success('Crimen guardado correctamente.') y cerrarForm()
-  //   - Error: alertsStore.error(message, details) y llenar erroresForm
-  cerrarForm()
+// El modal entrega el cuerpo listo: { location, type, description,
+// occurredAt (ISO), severity, status, villain, sighting }.
+async function guardarCrimen(payload) {
+  guardando.value = true
+  erroresForm.value = {}
+
+  try {
+    const editando = crimenEditando.value
+    const { data } = editando
+      ? await api.patch(`/crimes/${editando.id}`, payload)
+      : await api.post('/crimes', payload)
+
+    alerts.success(editando ? 'Crimen actualizado correctamente.' : 'Crimen registrado correctamente.')
+    cerrarForm()
+    await pedirCrimenes()
+    seleccionarCrimen(data)
+  } catch (err) {
+    mostrarError(err)
+  } finally {
+    guardando.value = false
+  }
 }
 
 /* ---------- Eliminar ---------- */
@@ -141,12 +231,22 @@ function cancelarEliminar() {
   crimenAEliminar.value = null
 }
 
-function confirmarEliminar() {
-  // TODO(integración):
-  //   - DELETE /crimes/:id (usar crimenAEliminar.id)
-  //   - Éxito: alertsStore.success('Crimen eliminado correctamente.')
-  //   - Error: alertsStore.error(message, details)
-  crimenAEliminar.value = null
+async function confirmarEliminar() {
+  const crimen = crimenAEliminar.value
+  if (!crimen) return
+
+  eliminando.value = true
+
+  try {
+    await api.delete(`/crimes/${crimen.id}`)
+    alerts.success('Crimen eliminado correctamente.')
+    crimenAEliminar.value = null
+    await pedirCrimenes()
+  } catch (err) {
+    mostrarError(err)
+  } finally {
+    eliminando.value = false
+  }
 }
 </script>
 
